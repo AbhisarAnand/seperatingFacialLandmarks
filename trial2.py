@@ -1,4 +1,5 @@
 import glob
+
 import cv2
 import dlib
 import numpy
@@ -17,11 +18,9 @@ files = []
 for file in glob.glob("/home/abhisar/PycharmProjects/seperatingFacialLandmarks/utils/Images/*.jpg"):
     files.append(str(file))
 
-print(files)
-print(len(files))
 k = 0
-for i in files:
-
+i = 0
+while i < len(files):
     frame = cv2.imread(files[k])
 
     cv2.imshow("Frame", frame)
@@ -51,13 +50,8 @@ for i in files:
         white = cv2.bitwise_and(frame, frame, mask=white_mask)
         finalMask = cv2.copyTo(anotherFrame, white)
         frame = finalMask
-        k+=1
-
-    cv2.imwrite(file, frame)
-    cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
-
-
-cv2.destroyAllWindows()
+        cv2.imshow("Frame", frame)
+        cv2.imwrite(files[k], frame)
+        print("saving")
+    k = k + 1
+    i += 1
