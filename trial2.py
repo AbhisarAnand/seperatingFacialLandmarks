@@ -4,6 +4,7 @@
 
 from os import listdir
 
+from PIL import Image
 import cv2
 import dlib
 import imutils
@@ -33,14 +34,14 @@ files = [] = listdir("idenprof/training/")
 
 
 # loop over frames from the video stream
-while True:
+for filename in files:
 
     # grab the frame from the threaded video file stream, resize
     # it, and convert it to grayscale
     # channels)
-    _, frame = vs.read()
-    frame = imutils.resize(frame, width=450)
-    fframe = frame.copy()
+
+    frame = Image.open(filename)
+    anotherFrame = frame.copy()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     rects = detector(gray, 0)
@@ -63,13 +64,13 @@ while True:
         white_color = numpy.array([255, 255, 255])
         white_mask = cv2.inRange(frame, white_color, white_color)
         white = cv2.bitwise_and(frame, frame, mask=white_mask)
-        finalMask = cv2.copyTo(fframe, white)
+        finalMask = cv2.copyTo(anotherFrame, white)
         frame = finalMask
 
     # show the frame
+    cv2.imwrite(filename, frame)
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
-    # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
 
