@@ -1,4 +1,5 @@
 import glob
+import shutil
 
 import cv2
 import dlib
@@ -14,15 +15,19 @@ predictor = dlib.shape_predictor(path)
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 (mStart, mEnd) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
+
+
 files = []
-for file in glob.glob("/home/abhisar/PycharmProjects/seperatingFacialLandmarks/utils/Images/*.jpg"):
+for file in glob.glob("/home/abhisar/Desktop/idenprof/train/awake/*.jpg"):
     files.append(str(file))
+badImagesPath = "/home/abhisar/Desktop/idenprof/badPictures"
+higherColor = [10, 10, 10]
 
 k = 0
 i = 0
 while i < len(files):
     frame = cv2.imread(files[k])
-
+    frame = cv2.resize(frame, (640, 480))
     cv2.imshow("Frame", frame)
     cv2.waitKey(1)
 
@@ -53,5 +58,15 @@ while i < len(files):
         cv2.imshow("Frame", frame)
         cv2.imwrite(files[k], frame)
         print("saving")
+        pixels = numpy.float32(frame.reshape(-1, 3))
+        n_colors = 4
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 200, .1)
+        flags = cv2.KMEANS_RANDOM_CENTERS
+        _, labels, palette = cv2.kmeans(pixels, n_colors, None, criteria, 10, flags)
+        _, counts = numpy.unique(labels, return_counts=True)
+        dominant = palette[numpy.argmax(counts)]
+        if dominant[0] > higherColor[0]:
+            print("Delete the file: ", files[k])
+            shutil.move(files[k], badImagesPath)
     k = k + 1
     i += 1
