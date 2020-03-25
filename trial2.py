@@ -5,6 +5,7 @@ import cv2
 import dlib
 import numpy
 from imutils import face_utils
+from pip._vendor.distlib.compat import raw_input
 
 path = '/home/abhisar/PycharmProjects/seperatingFacialLandmarks/utils/shape_predictor_68_face_landmarks (1).dat'
 
@@ -16,10 +17,11 @@ predictor = dlib.shape_predictor(path)
 (mStart, mEnd) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
 
-
 files = []
-for file in glob.glob("/home/abhisar/Desktop/idenprof/train/awake/*.jpg"):
+ImagesPath = "/home/abhisar/Desktop/idenprof/test/Asleep/*.jpg"
+for file in glob.glob(ImagesPath):
     files.append(str(file))
+
 badImagesPath = "/home/abhisar/Desktop/idenprof/badPictures"
 higherColor = [10, 10, 10]
 
@@ -30,7 +32,7 @@ while i < len(files):
     frame = cv2.resize(frame, (640, 480))
     cv2.imshow("Frame", frame)
     cv2.waitKey(1)
-
+    print(files[k])
     anotherFrame = frame.copy()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -58,15 +60,16 @@ while i < len(files):
         cv2.imshow("Frame", frame)
         cv2.imwrite(files[k], frame)
         print("saving")
-        pixels = numpy.float32(frame.reshape(-1, 3))
-        n_colors = 4
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 200, .1)
-        flags = cv2.KMEANS_RANDOM_CENTERS
-        _, labels, palette = cv2.kmeans(pixels, n_colors, None, criteria, 10, flags)
-        _, counts = numpy.unique(labels, return_counts=True)
-        dominant = palette[numpy.argmax(counts)]
-        if dominant[0] > higherColor[0]:
-            print("Delete the file: ", files[k])
-            shutil.move(files[k], badImagesPath)
+    pixels = numpy.float32(frame.reshape(-1, 3))
+    n_colors = 4
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 200, .1)
+    flags = cv2.KMEANS_RANDOM_CENTERS
+    _, labels, palette = cv2.kmeans(pixels, n_colors, None, criteria, 10, flags)
+    _, counts = numpy.unique(labels, return_counts=True)
+    dominant = palette[numpy.argmax(counts)]
+    if dominant[0] > higherColor[0]:
+        print("Delete the file: ", files[k])
+        shutil.move(files[k], badImagesPath)
+        cv2.imshow("Deleted Frames", frame)
     k = k + 1
     i += 1
