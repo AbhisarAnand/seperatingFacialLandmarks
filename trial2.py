@@ -18,7 +18,7 @@ predictor = dlib.shape_predictor(path)
 
 
 files = []
-ImagesPath = "/home/abhisar/Desktop/idenprof/test/Asleep/*.jpg"
+ImagesPath = "/home/abhisar/Desktop/idenprof/test/asleep/*.jpg"
 for file in glob.glob(ImagesPath):
     files.append(str(file))
 
