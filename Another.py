@@ -35,7 +35,9 @@ while i < len(files):
         minSize=(200, 200),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-
+if faces.isempty():
+    shutil.move(files[k], badImagesPath)
+else:
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
@@ -45,5 +47,6 @@ while i < len(files):
         ROI = frame[y:y + h, x:x + w] 
         cv2.imwrite(goodImagesPath+files[k], ROI)
         
-i+=1
-k+=1
+        
+    i+=1
+    k+=1
