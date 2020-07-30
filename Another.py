@@ -36,7 +36,7 @@ while i < len(files):
         minSize=(200, 200),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-if faces.isempty():
+if not faces:
     shutil.move(files[k], badImagesPath)
 else:
     # Draw a rectangle around the faces
