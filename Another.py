@@ -14,13 +14,13 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 
 
 files = []
-ImagesPath = "*.jpg"
+ImagesPath = "/*.jpg"
 for file in glob.glob(ImagesPath):
     files.append(str(file))
 
-badImagesPath = "/badPictures"
-
-
+goodImagesPath = "/"
+k=0
+i=0
 while i < len(files):
     # Capture frame-by-frame
     frame = cv2.imread(files[k])
@@ -43,6 +43,7 @@ while i < len(files):
         roi_color = frame[y:y + h, x:x + w]
         cv2.putText(frame, 'Face', (x, y), font, 2, (255, 0, 0), 5)
         ROI = frame[y:y + h, x:x + w] 
-        cv2.imwrite(files[k], ROI)
-
-
+        cv2.imwrite(goodImagesPath+files[k], ROI)
+        
+i+=1
+k+=1
