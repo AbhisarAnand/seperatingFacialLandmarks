@@ -19,6 +19,7 @@ for file in glob.glob(ImagesPath):
     files.append(str(file))
 
 goodImagesPath = "/"
+badImagesPath = "/"
 k=0
 i=0
 while i < len(files):
@@ -45,7 +46,7 @@ else:
         roi_color = frame[y:y + h, x:x + w]
         cv2.putText(frame, 'Face', (x, y), font, 2, (255, 0, 0), 5)
         ROI = frame[y:y + h, x:x + w] 
-        cv2.imwrite(goodImagesPath+files[k], ROI)
+        shutil.move(ROI, goodImagesPath+files[k])
         
         
     i+=1
