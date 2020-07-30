@@ -1,17 +1,29 @@
+import glob
+import shutil
 import cv2
-
 import numpy
 
-cascPath = "utils/haarcascade_frontalface_default.xml"
 
+
+cascPath = "utils/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
-font = cv2.FONT_HERSHEY_SIMPLEX
-video_capture = cv2.VideoCapture("/dev/video0")
 
-while True:
+
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+
+files = []
+ImagesPath = "*.jpg"
+for file in glob.glob(ImagesPath):
+    files.append(str(file))
+
+badImagesPath = "/badPictures"
+
+
+while i < len(files):
     # Capture frame-by-frame
-    ret, frame = video_capture.read()
+    frame = cv2.imread(files[k])
     fframe = frame.copy()
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -30,9 +42,7 @@ while True:
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = frame[y:y + h, x:x + w]
         cv2.putText(frame, 'Face', (x, y), font, 2, (255, 0, 0), 5)
-        ROI = frame[y:y + h, x:x + w]
+        ROI = frame[y:y + h, x:x + w] 
+        cv2.imwrite(files[k], ROI)
 
 
-    cv2.imshow('Video', finalMask)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
