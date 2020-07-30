@@ -3,12 +3,8 @@ import cv2
 import numpy
 
 cascPath = "utils/haarcascade_frontalface_default.xml"
-eyePath = "utils/haarcascade_eye.xml"
-smilePath = "utils/haarcascade_smile.xml"
 
 faceCascade = cv2.CascadeClassifier(cascPath)
-eyeCascade = cv2.CascadeClassifier(eyePath)
-smileCascade = cv2.CascadeClassifier(smilePath)
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 video_capture = cv2.VideoCapture("/dev/video0")
@@ -34,31 +30,8 @@ while True:
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = frame[y:y + h, x:x + w]
         cv2.putText(frame, 'Face', (x, y), font, 2, (255, 0, 0), 5)
+        ROI = frame[y:y + h, x:x + w]
 
-    smile = smileCascade.detectMultiScale(
-        roi_gray,
-        scaleFactor=1.16,
-        minNeighbors=35,
-        minSize=(25, 25),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-
-    for (sx, sy, sw, sh) in smile:
-        cv2.rectangle(roi_color, (sh, sy), (sx + sw, sy + sh), (255, 255, 255), -1)
-        cv2.putText(frame, 'Smile', (x + sx, y + sy), 1, 1, (0, 255, 0), 1)
-
-    eyes = eyeCascade.detectMultiScale(roi_gray)
-    for (ex, ey, ew, eh) in eyes:
-        cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (255, 255, 255), -1)
-        cv2.putText(frame, 'Eye', (x + ex, y + ey), 1, 1, (0, 255, 0), 1)
-
-    cv2.putText(frame, 'Number of Faces : ' + str(len(faces)), (40, 40), font, 1, (255, 0, 0), 2)
-    # Display the resulting frame
-
-    white_color = numpy.array([255, 255, 255])
-    white_mask = cv2.inRange(frame, white_color, white_color)
-    white = cv2.bitwise_and(frame, frame, mask=white_mask)
-    finalMask = cv2.copyTo(fframe, white)
 
     cv2.imshow('Video', finalMask)
     if cv2.waitKey(1) & 0xFF == ord('q'):
